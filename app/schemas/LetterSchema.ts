@@ -20,9 +20,9 @@ export const letterSchema = z.object({
     .min(1, "At least 1 day is required")
     .max(365, "Leave cannot exceed 1 year"),
     reason : minWords(5 , "Reason"),
-    subject : minWords(5 , "Subject"),
-    body : minWords(25 , "Body"),
-    status : z.enum(["Draft" , "Sent"]).default("Draft"),
-    pdfUrl : z.string().url().optional(),
-    emailSent : z.boolean().default(false),
+    // subject : minWords(5 , "Subject"),
+    // body : minWords(25 , "Body"),
+    // status : z.enum(["Draft" , "Sent"]).default("Draft"),
+    // pdfUrl : z.string().url().optional(),
+    // emailSent : z.boolean().default(false),
 })
