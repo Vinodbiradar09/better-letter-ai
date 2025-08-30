@@ -13,6 +13,14 @@ export interface UserInt extends Document{
     isVerified : boolean,
 }
 
+export interface UserPublic {
+  _id: mongoose.Types.ObjectId;
+  usn: string;
+  email: string;
+  isVerified: boolean;
+}
+
+
 const userSchema = new Schema<UserInt>(
     {
         name : {
@@ -32,8 +40,8 @@ const userSchema = new Schema<UserInt>(
         },
         usn : {
             type : String,
-            unique : [true , "USN must be unique"],
-            required : [true , "USN is required"],
+            unique : [true , "Usn must be unique"],
+            required : [true , "Usn is required"],
             uppercase : true,
             match : [/^1AY(22|23|24|25|26)[A-Z]{2,3}(0(0[1-9]|[1-9][0-9])|1([0-7][0-9]|80))$/ , "Invalid USN format"],
             index : true,
