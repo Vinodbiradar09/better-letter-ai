@@ -4,7 +4,6 @@ import User from "@/app/model/User";
 import { usnValidation , signupValidation } from "@/app/schemas/UserSchema";
 import { signupTyp } from "@/app/types/UserTyp";
 import { resendEmailVerification } from "@/app/helpers/resendVerification";
-import { ApiRes } from "@/app/types/ApiRes";
 import { sanitizeUser } from "@/app/helpers/sanitizedUser";
 
 export async function POST(request : NextRequest) : Promise<NextResponse> {
@@ -23,7 +22,7 @@ export async function POST(request : NextRequest) : Promise<NextResponse> {
                 },{status : 402}
             )
         }
-        const signupResult = signupValidation.safeParse({name , email , usn , password , department});
+        const signupResult = signupValidation.safeParse({name , email , usn , department , password});
         if(!signupResult.success){
             const errors = signupResult.error.format();
             const signupErrors = [
@@ -48,7 +47,7 @@ export async function POST(request : NextRequest) : Promise<NextResponse> {
                 {
                     message : "Usn is taken",
                     success : false,
-                },{status : 400}
+                },{status : 409}
             )
         }
         const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();

@@ -80,6 +80,6 @@ userSchema.pre("save" , async function (next) {
     next();
 })
 
-const User : Model<UserInt> = models?.user as mongoose.Model<UserInt> || model("User" , userSchema);
+const User : Model<UserInt> = models?.User as mongoose.Model<UserInt> || model<UserInt>("User" , userSchema);
 
 export default User;
