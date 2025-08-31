@@ -172,7 +172,7 @@ NOW CREATE A MASTERPIECE OF ACADEMIC CORRESPONDENCE.
 Return ONLY this JSON format:
 {
   "subject": "sophisticated and specific subject line (6-12 words)",
-  "body": "complete professional letter body with exceptional sophistication and uniqueness (180-280 words)"
+  "body": "complete professional letter body with exceptional sophistication and uniqueness (100-120 words)"
 }
 `;
 }

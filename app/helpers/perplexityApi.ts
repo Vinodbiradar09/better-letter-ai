@@ -45,8 +45,6 @@ export async function callPerplexityAPI(prompt : string , apiKey : string) : Pro
         temperature : 0.95,
         max_tokens: 2500,
         top_p: 0.9,
-        // presence_penalty: 0.8,
-        // frequency_penalty: 0.9,
         stream: false
     }
 

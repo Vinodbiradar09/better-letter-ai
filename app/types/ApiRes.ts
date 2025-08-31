@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { UserInt } from "../model/User";
-// import { LetterInt } from "../model/Letter";
 
 export interface LetterT {
     _id : mongoose.Types.ObjectId,
@@ -19,9 +18,18 @@ export interface LetterT {
     body : string,
 }
 
+export interface LetterData {
+    data : {
+        letterId : mongoose.Types.ObjectId,
+        sentTo: string,
+        sentAt?: string,
+    }
+}
+
 export interface ApiRes {
     success : boolean,
     message : string,
     user? : UserInt,
     letter? : LetterT,
+    data?: LetterData,
 }

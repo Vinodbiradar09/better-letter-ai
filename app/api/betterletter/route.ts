@@ -15,15 +15,15 @@ export async function POST(request : NextRequest){
         const body : LetterTyp = await request.json();
         const {to , fromDate , toDate, totalDays, reason} = body;
         const user = await currentUser();
-        // if(!user){
-        //     return NextResponse.json(
-        //         {
-        //             message : "Unauthorized User",
-        //             success : false,
-        //         },{status : 401}
-        //     )
-        // }
-        const from = '68b2d0f18f2cdbccef474f7a';
+        if(!user){
+            return NextResponse.json(
+                {
+                    message : "Unauthorized User",
+                    success : false,
+                },{status : 401}
+            )
+        }
+        const from = user.id;
         const u =  await UserM.findById(from);
         const letterResult = letterSchema.safeParse({from , to , fromDate , toDate , totalDays , reason})
         if(!letterResult.success){
@@ -47,9 +47,9 @@ export async function POST(request : NextRequest){
         }
         const input : LetterInput = {
             from : {
-                name : u?.name ?? "Vinod",
-                usn : u?.usn ?? "1AY22IS125",
-                email : u?.email ?? "vinodj.22.beis@acharya.ac.in",
+                name : user.name,
+                usn : user.usn,
+                email : user.email
             },
             to,
             date : Date.now().toString(),
@@ -89,9 +89,9 @@ export async function POST(request : NextRequest){
         const generatedLetter : LetterT = {
             _id : letter._id,
             from : {
-                name : u?.name,
-                usn : u?.usn,
-                email : u?.email
+                name : user.name,
+                usn : user.usn,
+                email : user.email,
             },
             to,
             date : new Date().toISOString().split("T")[0],
