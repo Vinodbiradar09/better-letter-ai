@@ -22,7 +22,7 @@ export function createEmailTemplate(letterData: LetterT): string {
             </div>
             
             <div class="content">
-                <p>Dear ${letterData.to.name},</p>
+                <p>Respected ${letterData.to.name},</p>
                 
                 <p>You have received a leave application from <strong>${letterData.from.name}</strong> (USN: ${letterData.from.usn}).</p>
                 
