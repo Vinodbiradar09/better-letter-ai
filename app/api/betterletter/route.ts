@@ -1,6 +1,5 @@
 import { connectDB } from "@/app/lib/db";
 import { NextRequest , NextResponse } from "next/server";
-import UserM from "@/app/model/User";
 import Letter from "@/app/model/Letter";
 import { letterSchema } from "@/app/schemas/LetterSchema";
 import { currentUser } from "@/app/helpers/currentUser";
@@ -24,7 +23,6 @@ export async function POST(request : NextRequest){
             )
         }
         const from = user.id;
-        const u =  await UserM.findById(from);
         const letterResult = letterSchema.safeParse({from , to , fromDate , toDate , totalDays , reason})
         if(!letterResult.success){
             const letterErrors = letterResult.error.format();

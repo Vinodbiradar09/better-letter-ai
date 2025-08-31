@@ -39,5 +39,5 @@ export interface ApiRes {
     user? : UserInt,
     letter? : LetterT,
     data?: LetterData,
-    lettersHist : LetterHistory[],
+    lettersHist?: LetterHistory[],
 }
