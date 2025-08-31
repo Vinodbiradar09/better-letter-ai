@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export interface LetterTyp {
     to : {
         name : string,
@@ -8,4 +10,10 @@ export interface LetterTyp {
     toDate : Date,
     totalDays : number,
     reason : string,
+}
+
+export interface SearchHistoryTyp {
+    from : string,
+    emailSent : boolean,
+    subject?: string | { $regex: string; $options: string };
 }

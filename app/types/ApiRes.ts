@@ -26,10 +26,18 @@ export interface LetterData {
     }
 }
 
+export interface LetterHistory {
+        _idLetter : string,
+        pdfUrlLetter : string,
+        subjectLetter : string,
+        bodyLetter :string,
+}       
+
 export interface ApiRes {
     success : boolean,
     message : string,
     user? : UserInt,
     letter? : LetterT,
     data?: LetterData,
+    lettersHist : LetterHistory[],
 }

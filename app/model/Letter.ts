@@ -17,7 +17,6 @@ export interface LetterInt extends Document{
     status : "Draft" | "Sent",
     pdfUrl? : string,
     emailSent : boolean,
-    // createdAt?: Date,
 }
 
 const letterSchema = new Schema<LetterInt>(
