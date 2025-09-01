@@ -84,7 +84,7 @@ export async function POST(request : NextRequest){
                 },{status : 400}
             )
         }
-        const generatedLetter : LetterT = {
+        const generatedLetter = {
             _id : letter._id,
             from : {
                 name : user.name,

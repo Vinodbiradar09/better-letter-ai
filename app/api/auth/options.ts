@@ -39,6 +39,7 @@ export const authOptions : NextAuthOptions = {
                             usn: user.usn,
                             name : user.name,
                             isVerified: user.isVerified,
+                            department : user.department,
                         } as User
                     } else {
                         return null;
@@ -61,6 +62,7 @@ export const authOptions : NextAuthOptions = {
                 token.usn = user.usn
                 token.name = user.name
                 token.isVerified = user.isVerified
+                token.department = user.department
             }
             return token;
         },
@@ -71,6 +73,7 @@ export const authOptions : NextAuthOptions = {
                 session.user.usn = token.usn as string
                 session.user.name = token.name as string
                 session.user.isVerified = token.isVerified as boolean
+                session.user.department = token.department as string
             }
             return session
         }

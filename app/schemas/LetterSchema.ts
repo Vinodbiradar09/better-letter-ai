@@ -15,14 +15,29 @@ export const letterSchema = z.object({
     }),
     fromDate: z.coerce.date({ message: "From Date is required" }),
     toDate: z.coerce.date({ message: "To Date is required" }),
-    totalDays: z
+    totalDays: z.coerce
     .number()
     .min(1, "At least 1 day is required")
     .max(365, "Leave cannot exceed 1 year"),
     reason : minWords(5 , "Reason"),
-    // subject : minWords(5 , "Subject"),
-    // body : minWords(25 , "Body"),
-    // status : z.enum(["Draft" , "Sent"]).default("Draft"),
-    // pdfUrl : z.string().url().optional(),
-    // emailSent : z.boolean().default(false),
 })
+
+
+export const LetterFeSchema = z.object({
+ to : z.object({
+        name : z.string().trim().min(4 , {message : "Mentors name must be atleast 4 chars"}),
+        email : z.string().email({message : "Invalid email addreess of the mentor"}),
+        info: z.string().min(1, "Mentor designation is required"),
+    }),
+  fromDate: z.string().min(1, "From date is required"),
+  toDate: z.string().min(1, "To date is required"),
+  totalDays: z.number().min(1, "Total days must be at least 1"),
+ reason : minWords(5 , "Reason"),
+}).refine((data) => {
+  const fromDate = new Date(data.fromDate);
+  const toDate = new Date(data.toDate);
+  return toDate >= fromDate;
+}, {
+  message: "To date must be same as or after from date",
+  path: ["toDate"],
+});

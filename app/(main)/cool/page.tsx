@@ -5,6 +5,7 @@ import { mentors } from '@/app/helpers/proffessors';
 import { ApiRes } from '@/app/types/ApiRes';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 const Cool = () => {
   const router = useRouter();
@@ -57,6 +58,25 @@ const Cool = () => {
 
       <div>
         {session.user.usn}
+      </div>
+
+      <div>
+        {session.user.department}
+      </div>
+
+      <div>
+       <div>
+         <Button onClick={()=> router.replace("/leave/letter")}>
+            Generate Letter
+        </Button>
+       </div>
+
+        <div>
+        <Button onClick={()=> router.replace("/lettershistory")}>
+            View Letter History
+        </Button>
+        </div>
+
       </div>
     </div>
   )

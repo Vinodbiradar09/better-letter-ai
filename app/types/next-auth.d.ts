@@ -8,6 +8,7 @@ declare module "next-auth" {
       usn?: string;
       name: string,      
       isVerified?: boolean;
+      department?: string;
     } & DefaultSession["user"]
   }
 
@@ -17,6 +18,7 @@ declare module "next-auth" {
     usn?: string;
     name : string,
     isVerified?: boolean;
+    department?: string;
   }
 }
 
@@ -27,5 +29,6 @@ declare module "next-auth/jwt" {
     usn?: string;
     name: string,
     isVerified?: boolean;
+    department?: string;
   }
 }
