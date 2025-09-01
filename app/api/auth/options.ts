@@ -37,6 +37,7 @@ export const authOptions : NextAuthOptions = {
                             id: user._id.toString(),
                             email: user.email,
                             usn: user.usn,
+                            name : user.name,
                             isVerified: user.isVerified,
                         } as User
                     } else {
@@ -58,6 +59,7 @@ export const authOptions : NextAuthOptions = {
                 token.id = user.id
                 token.email = user.email
                 token.usn = user.usn
+                token.name = user.name
                 token.isVerified = user.isVerified
             }
             return token;
@@ -67,6 +69,7 @@ export const authOptions : NextAuthOptions = {
                 session.user.id = token.id as string
                 session.user.email = token.email as string
                 session.user.usn = token.usn as string
+                session.user.name = token.name as string
                 session.user.isVerified = token.isVerified as boolean
             }
             return session
