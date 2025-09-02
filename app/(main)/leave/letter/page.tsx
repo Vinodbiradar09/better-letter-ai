@@ -27,6 +27,7 @@ const LeaveLetter = () => {
     const router = useRouter();
     const [letter , setLetter] = useState<LetterT | null>(null);
     const [isGeneratingLetter, setIsGeneratingLetter] = useState<boolean>(false);
+    const [isSendingEmail , setIsSendingEmail] = useState<boolean>(false);
     const { data: session, status } = useSession();
 
     const form = useForm<z.infer<typeof LetterFeSchema>>({
@@ -82,6 +83,7 @@ const LeaveLetter = () => {
             const response = await axios.post<ApiRes>("/api/betterletter", data);
             
             if (response.data.success) {
+                console.log("letter" , response.data.letter);
                 toast("Letter generated successfully!", {
                     action : {
                         label : "Yeah",
@@ -89,7 +91,6 @@ const LeaveLetter = () => {
                     }
                 });
                 setLetter(response.data.letter || null)
-                form.reset();
             } else {
                 toast.error("Letter generation failed", {
                     description: response.data.message,
@@ -115,6 +116,44 @@ const LeaveLetter = () => {
         }
     };
 
+    const confirmAndSend = async(id : string)=>{
+        setIsSendingEmail(true);
+        try {
+            if(!id){
+                throw new Error("Id is required to send the leave letter");
+            }
+            const response = await axios.post<ApiRes>(`/api/sendletter/${id}`);
+            if(response.data.success){
+                toast("Letter sent" , {
+                    description : `Your Leave Letter has been sent to ${letter?.to.name}'s email`,
+                    action : {
+                        label : "Yeah",
+                        onClick : ()=> console.log("ok"),
+                    }
+                })
+                form.reset();
+                router.replace("/cool");
+            } else{
+                toast("Failed to send the letter to your mentor's email" , {
+                    action : {
+                        label : "Yeah",
+                        onClick : ()=> console.log("ok"),
+                    }
+                })
+            }
+        } catch (error) {
+            console.log("Error while sending the letter to your mentor" , error);
+            const axiosError = error as AxiosError<ApiRes>;
+            toast(axiosError.response?.data.message || "Error while sending the letter to mentor", {
+                action : {
+                    label : "Yeah",
+                    onClick : ()=> console.log("ok")
+                }
+            })
+        } finally{
+            setIsSendingEmail(false);
+        }
+    }
     if (status === "loading") {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
@@ -254,11 +293,38 @@ const LeaveLetter = () => {
                     >
                         {isGeneratingLetter ? "Generating Letter..." : "Generate Leave Letter"}
                     </Button>
+
+                    {
+                        letter && (
+                            <Button type="submit" disabled={isGeneratingLetter}>
+                                {!isGeneratingLetter ? "Regenerate" : "Regenerating..."}
+                            </Button>
+                        )
+                    }
                 </form>
             </Form>
 
             <div>
-               {JSON.stringify(letter)}
+                <p>{letter?.from.name}</p>
+                <p>{letter?.from.email}</p>
+                <p>{letter?.from.usn}</p>
+                <p>{letter?.to.name}</p>
+                <p>{letter?.to.email}</p>
+                <p>{letter?.to.info}</p>
+
+                <h5>{letter?.date}</h5>
+                <h4>{letter?.subject}</h4>
+                <h6>body:{letter?.body}</h6>
+                <p>hello : {letter?._id.toString()}</p>
+            </div>
+             {
+                letter && !isGeneratingLetter && (
+                    <Button onClick={()=> void confirmAndSend(letter._id.toString())}>
+                        {isSendingEmail ? "Sending..." : "Confirm&Send"}
+                    </Button>
+                )
+             }
+            <div>
             </div>
         </div>
     );

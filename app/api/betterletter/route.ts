@@ -5,8 +5,6 @@ import { letterSchema } from "@/app/schemas/LetterSchema";
 import { currentUser } from "@/app/helpers/currentUser";
 import { LetterTyp } from "@/app/types/letterTyp";
 import { generateProfessionalLetter, LetterInput } from "@/app/helpers/generateLetter";
-import { LetterT } from "@/app/types/ApiRes";
-
 
 export async function POST(request : NextRequest){
     try {
