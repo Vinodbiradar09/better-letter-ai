@@ -132,7 +132,7 @@ const LetterHistory = () => {
             key={letter._idLetter}
             subject={letter.subjectLetter}
             pdfUrl={letter.pdfProxyUrl}
-            onDelete={()=> deleteLetterHistory(letter._idLetter)}
+            onDelete={()=> deleteLetterHistory(letter._idLetter)} 
             />
           ))}
 
