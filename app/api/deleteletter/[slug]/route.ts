@@ -34,7 +34,7 @@ export async function DELETE(request : NextRequest , {params} : {params : Promis
                 },{status : 400}
             )
         }
-        if(user.id !== loggedUser._id){
+        if(user.id.toString() !== loggedUser._id.toString()){
             return NextResponse.json(
                 {
                     message : "You are not allowed to delete the leave letter",

@@ -28,7 +28,7 @@ export interface LetterData {
 
 export interface LetterHistory {
         _idLetter : string,
-        pdfUrlLetter : string,
+        pdfProxyUrl : string,
         subjectLetter : string,
         bodyLetter :string,
 }       

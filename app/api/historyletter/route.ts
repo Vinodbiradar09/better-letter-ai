@@ -26,7 +26,8 @@ export async function GET(request : NextRequest) {
             },{status : 404}
         )
       }
-      if(userFound._id !== user.id){
+      console.log("user.id" , user.id.toString() , userFound._id.toString());
+      if(userFound._id.toString() !== user.id.toString()){
         return NextResponse.json(
             {
                 message : "You are not authorized to access the history",
@@ -52,12 +53,12 @@ export async function GET(request : NextRequest) {
             {
                 message : "You have Zero Leave letters",
                 success : true,
-            },{status : 204}
+            },{status : 201}
         )
       }
       const letterHis = letters.map(lett =>({
         _idLetter : lett._id,
-        pdfUrlLetter : lett.pdfUrl,
+        pdfProxyUrl : `/api/pdfproxy?pdfUrl=${encodeURIComponent(lett?.pdfUrl || "")}`,
         subjectLetter : lett.subject,
         bodyLetter : lett.body,
       }))

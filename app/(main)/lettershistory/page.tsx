@@ -32,8 +32,12 @@ const LetterHistory = () => {
         setIsSubmittingLetterHistory(true);
         setLetterError("");
         const response = await axios.get<ApiRes>("/api/historyletter");
-        if(response.data.success && response.data.lettersHist){
-          setLetterHistory(response.data.lettersHist?.reverse() || [])
+        if(response.data.success && response.data.lettersHist?.length){
+          if(response.data.lettersHist.length > 0){
+            setLetterHistory(response.data.lettersHist?.reverse() || [])
+          }else{
+            setLetterError(response.data.message || "You Have zero Leave Letter history");
+          }
         } else {
           setLetterError(response.data.message || "Error while accessing the letter history");
         }
@@ -41,6 +45,8 @@ const LetterHistory = () => {
         console.error("Error while fetching the letter history" , error);
         const axiosError = error as AxiosError<ApiRes>;
         setLetterError(axiosError.response?.data.message || "Failed to get the Letter History");
+      } finally{
+        setIsSubmittingLetterHistory(false);
       }
     }
 
@@ -82,6 +88,8 @@ const LetterHistory = () => {
           })
 
           setLetterDelError(axiosError.response?.data.message || "Error deleting the letter history");
+        }finally{
+          setIsDeletingLetter(false);
         }
   }
 
@@ -116,13 +124,14 @@ const LetterHistory = () => {
       <h4>Leave Letter History</h4>
 
         <div>
+          {letterError}
           {!isSubmittingLetterHistory && 
           letterHistory.map((letter)=>(
 
             <HistoryCard 
             key={letter._idLetter}
             subject={letter.subjectLetter}
-            pdfUrl={letter.pdfUrlLetter}
+            pdfUrl={letter.pdfProxyUrl}
             onDelete={()=> deleteLetterHistory(letter._idLetter)}
             />
           ))}

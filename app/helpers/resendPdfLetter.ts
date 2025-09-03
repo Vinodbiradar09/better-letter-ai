@@ -30,6 +30,7 @@ export async function sendLeaveLetterPdf(letterData: LetterT, mentorEmail: strin
     const [emailResult , cloudinaryResult] = await Promise.all([emailPromise , cloudinaryUpload]);
 
     if (emailResult.error) {
+      console.log("letter data" , letterData , mentorEmail);
       console.error("Error while sending the pdf letter:", emailResult.error);
      throw new Error(`Email sending failed: ${emailResult.error.message || 'Unknown error'}`);
     }
