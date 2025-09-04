@@ -127,12 +127,12 @@ export default function DynamicLetterLanding() {
         Real excuses,<br /> freshly generated!
       </FloatingNote>
       <FloatingNote top="60%" left="78%" delay={3}>
-        AI-powered magic 🎩
+        AI-powered magic , Your AI will do work for you by writing a letter and sending it to email 🎩
       </FloatingNote>
       <FloatingNote top="30%" left="72%" delay={4}>
-        No more boring writing!
+        No more boring writing! Emails and letters
       </FloatingNote> <FloatingNote top="30%" left="72%" delay={4}>
-       Generate the letter and send as a pdf to mentor
+       Generate the letter and send as a pdf to mentor&apos;s email
       </FloatingNote>
 
   
@@ -144,7 +144,7 @@ export default function DynamicLetterLanding() {
           Your AI-powered assistant for hassle-free letters.
         </p>
          <p className="text-yellow-300 font-handwriting text-4xl md:text-5xl italic drop-shadow-lg mt-6 max-w-xl mx-auto">
-         just type the reason , generate the letter and send as a pdf , that&apos;s cool right
+         just type the reason , generate the letter and send as a pdf to mentor&apos;s email, that&apos;s cool right
         </p>
         <div className="flex flex-wrap justify-center gap-8 mt-12 w-full max-w-md mx-auto">
           <a

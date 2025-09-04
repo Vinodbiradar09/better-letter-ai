@@ -233,7 +233,7 @@ const SignUp = () => {
         If you ran fast probably you might enter the class
       </FloatingNote>
       <FloatingNote top="62%" left="7%" delay={3}>
-        That&apos;s cool we will generate the letter
+        That&apos;s cool we will generate the letter and send pdf to the email
       </FloatingNote>
       <FloatingNote top="58%" left="75%" delay={4}>
         WTF, again late to lab? 🤬
