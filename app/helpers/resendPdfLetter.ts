@@ -4,7 +4,7 @@ import { LetterT } from "../types/ApiRes";
 import { generateLeaveLetterPDF } from "./letterPdf";
 import { uploadLetterPDFToCloudinary } from "./cloudinary";
 
-export async function sendLeaveLetterPdf(letterData: LetterT, mentorEmail: string) : Promise<{success : boolean , message : string , emailId?:string ,  pdfUrl?:string }> {
+export async function sendLeaveLetterPdf(letterData: LetterT, mentorEmail: string) : Promise<{success : boolean , message : string , emailId?:string ,  pdfUrl?:string , publicId?: string }> {
   try {
     const pdfBuffer = await generateLeaveLetterPDF(letterData);
     if(!pdfBuffer || pdfBuffer.length === 0){
@@ -41,6 +41,7 @@ export async function sendLeaveLetterPdf(letterData: LetterT, mentorEmail: strin
         message : "Email sent successfully with PDF attachments",
         emailId : emailResult.data.id,
         pdfUrl : cloudinaryResult.success ? cloudinaryResult.secureUrl : undefined,
+        publicId : cloudinaryResult.success ? cloudinaryResult.publicId : undefined,
     }
   } catch (emailError: unknown) {
     if (emailError instanceof Error) {

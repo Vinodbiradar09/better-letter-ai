@@ -58,7 +58,7 @@ export async function GET(request : NextRequest) {
       }
       const letterHis = letters.map(lett =>({
         _idLetter : lett._id,
-        pdfProxyUrl : `/api/pdfproxy?pdfUrl=${encodeURIComponent(lett?.pdfUrl || "")}`,
+        pdfProxyUrl: `/api/pdfproxy?publicId=${encodeURIComponent(lett.publicId)}`,
         subjectLetter : lett.subject,
         bodyLetter : lett.body,
       }))

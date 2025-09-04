@@ -81,6 +81,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             status: 'Sent',
             emailSent: true,
             pdfUrl : emailResult.pdfUrl,
+            publicId : emailResult.publicId,
         },{new : true , runValidators : true});
 
         console.log("pdf url" , emailResult.pdfUrl);

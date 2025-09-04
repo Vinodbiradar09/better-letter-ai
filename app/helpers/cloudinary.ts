@@ -22,7 +22,7 @@ export async function uploadLetterPDFToCloudinary(
   try {
     console.log("uploading pdf to the cloudinary");
     const filename = `letters/${letterData.from.usn}_${letterData._id}_${Date.now()}`;
-
+    
     const uploadResult: UploadApiResponse = await new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
