@@ -157,7 +157,12 @@ const EmailVerification = ()=> {
       }
     } catch (error) {
       const e = error as AxiosError<ApiRes>;
-      toast(e.response?.data.message ?? "Server error. Please try later.");
+      toast(e.response?.data.message ?? "Server error. Please try later." , {
+        action : {
+          label : "Yeah",
+          onClick : ()=> console.log("ok"),
+        }
+      });
     } finally {
       setIsLoading(false);
     }
