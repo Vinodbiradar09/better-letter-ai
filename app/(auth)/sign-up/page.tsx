@@ -198,7 +198,12 @@ const SignUp = () => {
       }
     } catch (error) {
       const e = error as AxiosError<ApiRes>;
-      toast.error(e.response?.data.message ?? "Server error. Try later.");
+      toast(e.response?.data.message ?? "Server error. Try later.", {
+        action : {
+          label : "Yeah",
+          onClick : ()=> console.log("ok"),
+        }
+      });
     } finally {
       setFormSubmitting(false);
     }
