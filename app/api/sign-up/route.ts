@@ -54,6 +54,7 @@ export async function POST(request : NextRequest) : Promise<NextResponse> {
         const existingUserWithEmail = await User.findOne({email});
         if(existingUserWithEmail){
             if(existingUserWithEmail.isVerified){
+                user = await User.findOne({email});
                 return NextResponse.json(
                     {
                         message : "User with email already exist",

@@ -17,7 +17,6 @@ const sampleLines = [
   "Looking forward to the next class",
 ];
 
-// Static cursive line fixed on screen with styling and larger font
 function StaticLine({
   text,
   y,
@@ -83,7 +82,6 @@ function FloatingNote({
 }
 
 export default function DynamicLetterLanding() {
-  // Predefined more positions for better spread with responsiveness in mind
   const positions = [
     { y: "7%", x: "5%" },
     { y: "13%", x: "38%" },
@@ -100,7 +98,6 @@ export default function DynamicLetterLanding() {
 
   return (
     <div className="relative w-full min-h-screen bg-black overflow-hidden select-none">
-      {/* Static cursive lines scattered nicely all over */}
       {sampleLines.map((line, idx) => {
         const pos = positions[idx];
         const scale = 0.85 + (idx % 3) * 0.2;
@@ -119,7 +116,7 @@ export default function DynamicLetterLanding() {
         );
       })}
 
-      {/* Floating Sticky Notes */}
+
       <FloatingNote top="15%" left="5%" delay={0}>
         Missed class? <br /> No worries!
       </FloatingNote>
@@ -134,15 +131,20 @@ export default function DynamicLetterLanding() {
       </FloatingNote>
       <FloatingNote top="30%" left="72%" delay={4}>
         No more boring writing!
+      </FloatingNote> <FloatingNote top="30%" left="72%" delay={4}>
+       Generate the letter and send as a pdf to mentor
       </FloatingNote>
 
-      {/* Foreground / Main Content */}
+  
       <main className="relative z-10 flex flex-col items-center justify-center min-h-screen max-w-4xl mx-auto px-6 text-center">
         <h1 className="text-white text-5xl sm:text-6xl md:text-7xl font-serif drop-shadow-lg select-text break-words">
           Better <span className="text-yellow-400">Letter</span> AI
         </h1>
         <p className="text-yellow-300 font-handwriting text-4xl md:text-5xl italic drop-shadow-lg mt-6 max-w-xl mx-auto">
           Your AI-powered assistant for hassle-free letters.
+        </p>
+         <p className="text-yellow-300 font-handwriting text-4xl md:text-5xl italic drop-shadow-lg mt-6 max-w-xl mx-auto">
+         just type the reason , generate the letter and send as a pdf , that&apos;s cool right
         </p>
         <div className="flex flex-wrap justify-center gap-8 mt-12 w-full max-w-md mx-auto">
           <a
@@ -163,7 +165,7 @@ export default function DynamicLetterLanding() {
         </p>
       </main>
 
-      {/* Google Fonts */}
+  
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Dancing+Script&family=Great+Vibes&display=swap");
         .font-handwriting {

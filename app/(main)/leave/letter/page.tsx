@@ -494,7 +494,7 @@ const LeaveLetter = () => {
                   whileHover="hover"
                   whileTap="tap"
                 >
-                  {isSendingEmail ? "Sending..." : "Confirm & Send"}
+                  {isSendingEmail ? "Sending..." : "Send as Pdf"}
                 </motion.button>
               </div>
             </>
