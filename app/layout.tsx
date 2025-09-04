@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ContraAI",
-  description: "Transform content using four modes",
+  title: "BetterLetterAI",
+  description: "Let Your AI Generate The Leave Letter",
 };
 
 export default function RootLayout({

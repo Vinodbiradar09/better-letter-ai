@@ -55,7 +55,6 @@ const sampleLines = [
   "Commit early, commit often",
 ];
 
-// Positions for sample lines (spread across viewport)
 const letterPositions = [
   { y: "8%", x: "5%" },
   { y: "14%", x: "40%" },
@@ -186,7 +185,6 @@ const SignInForm = () => {
       transition={containerTransition}
       className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden p-8"
     >
-      {/* Background sample letter lines */}
       {sampleLines.map((line, index) => (
         <StaticLine
           key={index}
@@ -199,18 +197,17 @@ const SignInForm = () => {
         />
       ))}
 
-      {/* Floating sticky notes */}
       <FloatingNote top="16%" left="5%" delay={0}>
-        Slept till 9:00 AM,<br />Code won’t write itself!
+       IQ lower than attendance, <br />both are failing.
       </FloatingNote>
       <FloatingNote top="43%" left="14%" delay={2}>
-        Missed the debug call,<br />Oops!
+      Alarm clock screamed, <br />I chose violence (and sleep).
       </FloatingNote>
       <FloatingNote top="60%" left="6%" delay={3}>
-        Commit without push?<br />Classic rookie error!
+      Brain offline, <br />attendance out of service.
       </FloatingNote>
       <FloatingNote top="65%" left="77%" delay={4}>
-        Late to class,<br /> but code compiles!
+      Missed class again, <br />because my bed was giving a TED Talk.
       </FloatingNote>
       <FloatingNote top="31%" left="72%" delay={5}>
         Professor’s glare incoming,<br />Brace yourself!
@@ -311,7 +308,7 @@ const SignInForm = () => {
           className="mt-8 text-center text-yellow-400 font-mono select-none"
         >
           Don’t have an account?{" "}
-          <Link href="/signup" className="underline hover:text-yellow-300">
+          <Link href="/sign-up" className="underline hover:text-yellow-300">
             Sign up here
           </Link>
         </motion.p>

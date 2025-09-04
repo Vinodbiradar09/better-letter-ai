@@ -187,16 +187,16 @@ const EmailVerification = ()=> {
         Slept late, bro? <br /> Wake up for CS!
       </FloatingNote>
       <FloatingNote top="40%" left="12%" delay={2}>
-        Missed lab again! <br /> Oops hehe!
+       Skipped lecture, <br />but somehow mastered sleeping.
       </FloatingNote>
       <FloatingNote top="60%" left="6%" delay={3}>
-        Forgot your push? <br /> Try again!
+      Lazy? Nah. <br />I call it “selective participation in education.”
       </FloatingNote>
       <FloatingNote top="65%" left="78%" delay={4}>
-        Late to class, <br /> but code’s green!
+       Attendance: 0% <br />Excuses: 100%
       </FloatingNote>
       <FloatingNote top="30%" left="72%" delay={5}>
-        Get ready for the prof’s glare!
+      Every lecture I skip <br />is a love letter to failure.
       </FloatingNote>
 
       <motion.div

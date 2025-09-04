@@ -1,9 +1,8 @@
 "use client";
 
-import React, { Fragment } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
-import { Menu, Transition } from "@headlessui/react";
-import { ChevronDown, LogOut, Home } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { motion } from "framer-motion";
 
@@ -20,7 +19,7 @@ export default function Navbar() {
      
       <div className="flex items-center gap-4 flex-shrink-0">
         <h1
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push("/leave/letter")}
           className="text-xl sm:text-2xl font-extrabold select-none tracking-tight bg-clip-text text-transparent 
                      bg-gradient-to-r from-gray-200 via-white to-gray-400 cursor-pointer"
           tabIndex={0}
