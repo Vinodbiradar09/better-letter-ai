@@ -15,7 +15,6 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    // 1. Ensure user is authenticated
     const user = await currentUser();
     if (!user?.id) {
       return NextResponse.json(

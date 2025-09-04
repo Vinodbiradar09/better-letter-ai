@@ -1,103 +1,175 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React from "react";
+import { motion } from "framer-motion";
+
+const sampleLines = [
+  "Dear Professor,",
+  "I hope this finds you well.",
+  "Unfortunately, I couldn't attend lecture today because",
+  "I was feeling under the weather.",
+  "I apologize for the inconvenience.",
+  "Thank you for your understanding.",
+  "Sincerely,",
+  "A Dedicated Student",
+  "Please accept my apologies",
+  "I will catch up with the notes",
+  "Looking forward to the next class",
+];
+
+// Static cursive line fixed on screen with styling and larger font
+function StaticLine({
+  text,
+  y,
+  x,
+  scale,
+  opacity,
+  rotate,
+}: {
+  text: string;
+  y: string;
+  x: string;
+  scale: number;
+  opacity: number;
+  rotate: number;
+}) {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div
+      className="absolute whitespace-normal select-none pointer-events-none max-w-[30vw] sm:max-w-[28vw] md:max-w-[22vw]"
+      style={{
+        top: y,
+        left: x,
+        transform: `scale(${scale}) rotate(${rotate}deg)`,
+        opacity,
+      }}
+    >
+      <p
+        style={{ fontFamily: "'Dancing Script', cursive", userSelect: "none" }}
+        className="text-slate-400 sm:text-2xl md:text-4xl leading-relaxed tracking-wide drop-shadow"
+      >
+        {text}
+      </p>
+    </div>
+  );
+}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+function FloatingNote({
+  top,
+  left,
+  delay,
+  children,
+}: {
+  top: string;
+  left: string;
+  delay: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      className="absolute bg-yellow-400 text-black font-bold rounded-md shadow-lg px-6 py-3 max-w-xs pointer-events-none select-none"
+      style={{ top, left, rotate: "-8deg", zIndex: 1 }}
+      initial={{ y: 0, rotate: -6 }}
+      animate={{ y: [0, 8, 0], rotate: [-6, 3, -6] }}
+      transition={{
+        repeat: Infinity,
+        duration: 5,
+        ease: "easeInOut",
+        delay,
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export default function DynamicLetterLanding() {
+  // Predefined more positions for better spread with responsiveness in mind
+  const positions = [
+    { y: "7%", x: "5%" },
+    { y: "13%", x: "38%" },
+    { y: "17%", x: "70%" },
+    { y: "25%", x: "15%" },
+    { y: "32%", x: "50%" },
+    { y: "40%", x: "78%" },
+    { y: "50%", x: "10%" },
+    { y: "57%", x: "55%" },
+    { y: "65%", x: "30%" },
+    { y: "72%", x: "70%" },
+    { y: "80%", x: "18%" },
+  ];
+
+  return (
+    <div className="relative w-full min-h-screen bg-black overflow-hidden select-none">
+      {/* Static cursive lines scattered nicely all over */}
+      {sampleLines.map((line, idx) => {
+        const pos = positions[idx];
+        const scale = 0.85 + (idx % 3) * 0.2;
+        const opacity = 0.18 + (idx % 4) * 0.07;
+        const rotate = (idx % 5) * 4 - 10;
+        return (
+          <StaticLine
+            key={idx}
+            text={line}
+            y={pos.y}
+            x={pos.x}
+            scale={scale}
+            opacity={opacity}
+            rotate={rotate}
+          />
+        );
+      })}
+
+      {/* Floating Sticky Notes */}
+      <FloatingNote top="15%" left="5%" delay={0}>
+        Missed class? <br /> No worries!
+      </FloatingNote>
+      <FloatingNote top="40%" left="12%" delay={2}>
+        “My grandma’s sick” <br /> Not anymore ✨
+      </FloatingNote>
+      <FloatingNote top="65%" left="7%" delay={1.5}>
+        Real excuses,<br /> freshly generated!
+      </FloatingNote>
+      <FloatingNote top="60%" left="78%" delay={3}>
+        AI-powered magic 🎩
+      </FloatingNote>
+      <FloatingNote top="30%" left="72%" delay={4}>
+        No more boring writing!
+      </FloatingNote>
+
+      {/* Foreground / Main Content */}
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-screen max-w-4xl mx-auto px-6 text-center">
+        <h1 className="text-white text-5xl sm:text-6xl md:text-7xl font-serif drop-shadow-lg select-text break-words">
+          Better <span className="text-yellow-400">Letter</span> AI
+        </h1>
+        <p className="text-yellow-300 font-handwriting text-4xl md:text-5xl italic drop-shadow-lg mt-6 max-w-xl mx-auto">
+          Your AI-powered assistant for hassle-free letters.
+        </p>
+        <div className="flex flex-wrap justify-center gap-8 mt-12 w-full max-w-md mx-auto">
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/sign-up"
+            className="bg-yellow-400 text-black rounded-full px-14 py-4 text-xl font-bold shadow-lg hover:bg-yellow-300 transition flex-grow sm:flex-grow-0 sm:w-auto text-center"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            Get Started
           </a>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/sign-in"
+            className="border border-yellow-400 text-yellow-400 rounded-full px-14 py-4 text-xl font-bold hover:bg-yellow-400 hover:text-black transition flex-grow sm:flex-grow-0 sm:w-auto text-center"
           >
-            Read our docs
+            Login
           </a>
         </div>
+        <p className="mt-20 text-yellow-200 opacity-70 font-mono text-xs select-none max-w-xs mx-auto">
+          For best experience, view on desktop
+        </p>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      {/* Google Fonts */}
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Dancing+Script&family=Great+Vibes&display=swap");
+        .font-handwriting {
+          font-family: "Great Vibes", cursive;
+        }
+      `}</style>
     </div>
   );
 }

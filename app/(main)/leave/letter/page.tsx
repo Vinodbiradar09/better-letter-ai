@@ -30,11 +30,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { LetterT } from "@/app/types/ApiRes";
 import Navbar from "@/components/Navbar";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { motion, Variants } from "framer-motion";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
 };
 
 const containerTransition = {
@@ -166,7 +171,7 @@ const LeaveLetter = () => {
         });
         form.reset();
         setLetter(null);
-        router.replace("/cool");
+        router.replace("/leave/letter");
       } else {
         toast("Failed to send the letter to your mentor's email", {
           action: {
@@ -194,7 +199,7 @@ const LeaveLetter = () => {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center p-4">
         <p className="text-white text-xl font-semibold tracking-wide animate-pulse">
           Loading...
         </p>
@@ -204,7 +209,7 @@ const LeaveLetter = () => {
 
   if (!session?.user) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center px-6">
+      <div className="min-h-screen bg-black flex items-center justify-center p-6">
         <div className="text-center max-w-md">
           <h2 className="text-3xl font-bold text-white mb-4">Authentication Required</h2>
           <p className="text-gray-400 text-lg tracking-wide">Please login to continue</p>
@@ -214,186 +219,187 @@ const LeaveLetter = () => {
   }
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      transition={containerTransition}
-      className="max-w-md mx-auto space-y-8 p-6 bg-[#0a0a0a] rounded-lg shadow-xl border border-slate-700 backdrop-blur-md text-slate-300 min-h-screen flex flex-col"
-    >
+    <div className="min-h-screen bg-[#0a0a0a] text-slate-300 flex flex-col">
       <Navbar />
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(generateLetter)} className="space-y-6" noValidate>
-          <motion.div variants={fieldVariants}>
-            <FormField
-              control={form.control}
-              name="to.name"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Select Mentor</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={handleMentorChange} disabled={isGeneratingLetter}>
-                      <SelectTrigger className="bg-transparent border border-slate-600 placeholder-slate-500 text-slate-300 focus:border-slate-400 focus:ring-0">
-                        <SelectValue placeholder="Choose a mentor" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {mentors.map((mentor) => (
-                          <SelectItem key={mentor._id} value={mentor._id || ""}>
-                            {mentor.name} - {mentor.info}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
+      {/* Centered user info below navbar */}
+      <div className="text-center border-b border-slate-700 py-6">
+        <h2 className="text-xl font-semibold select-none">{session.user?.name}</h2>
+        <p className="text-sm text-gray-400 select-text">{session.user?.usn ?? "USN not available"}</p>
+      </div>
 
-          <motion.div variants={fieldVariants}>
-            <FormField
-              control={form.control}
-              name="fromDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>From Date</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      {...field}
-                      min={new Date().toISOString().split("T")[0]}
-                      disabled={isGeneratingLetter}
-                      className="bg-transparent border border-slate-600 placeholder-slate-500 text-slate-300 focus:border-slate-400 focus:ring-0"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
+      {/* Main content: form left, letter right */}
+      <div className="flex flex-col lg:flex-row max-w-7xl mx-auto p-6 flex-1 gap-8">
+        {/* Left - Form */}
+        <section className="lg:w-1/2 bg-[#121212] border border-slate-700 rounded-md p-6 shadow-lg overflow-auto max-h-[calc(100vh-12rem)]">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(generateLetter)} className="space-y-6" noValidate>
+              <FormField
+                control={form.control}
+                name="to.name"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Select Mentor</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={handleMentorChange}
+                        disabled={isGeneratingLetter}
+                        aria-label="Select a mentor"
+                      >
+                        <SelectTrigger className="bg-transparent border border-slate-600 placeholder-slate-500 text-slate-300 focus:border-slate-400 focus:ring-0">
+                          <SelectValue placeholder="Choose a mentor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {mentors.map((mentor) => (
+                            <SelectItem key={mentor._id} value={mentor._id || ""}>
+                              {mentor.name} - {mentor.info}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <motion.div variants={fieldVariants}>
-            <FormField
-              control={form.control}
-              name="toDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>To Date</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      {...field}
-                      min={watchFromDate || new Date().toISOString().split("T")[0]}
-                      disabled={isGeneratingLetter}
-                      className="bg-transparent border border-slate-600 placeholder-slate-500 text-slate-300 focus:border-slate-400 focus:ring-0"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
+              <FormField
+                control={form.control}
+                name="fromDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>From Date</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        min={new Date().toISOString().split("T")[0]}
+                        disabled={isGeneratingLetter}
+                        className="bg-transparent border border-slate-600 placeholder-slate-500 text-slate-300 focus:border-slate-400 focus:ring-0 appearance-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <motion.div variants={fieldVariants}>
-            <FormField
-              control={form.control}
-              name="totalDays"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Total Days</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      value={field.value}
-                      readOnly
-                      className="bg-gray-900 border border-slate-700 text-slate-300"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
+              <FormField
+                control={form.control}
+                name="toDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>To Date</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        min={watchFromDate || new Date().toISOString().split("T")[0]}
+                        disabled={isGeneratingLetter}
+                        className="bg-transparent border border-slate-600 placeholder-slate-500 text-slate-300 focus:border-slate-400 focus:ring-0 appearance-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <motion.div variants={fieldVariants}>
-            <FormField
-              control={form.control}
-              name="reason"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Reason for Leave</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder="Enter your reason for leave (minimum 5 words)"
-                      disabled={isGeneratingLetter}
-                      rows={4}
-                      className="bg-transparent border border-slate-600 placeholder-slate-500 text-slate-300 focus:border-slate-400 focus:ring-0 resize-none"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
+              <FormField
+                control={form.control}
+                name="totalDays"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total Days</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        value={field.value}
+                        readOnly
+                        className="bg-gray-900 border border-slate-700 text-slate-300"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <motion.div
-            variants={buttonVariants}
-            initial="rest"
-            whileHover="hover"
-            whileTap="tap"
-          >
-            <Button
-              type="submit"
-              disabled={isGeneratingLetter || !form.formState.isValid}
-              className="w-full"
-            >
-              {isGeneratingLetter ? "Generating Letter..." : "Generate Leave Letter"}
-            </Button>
-          </motion.div>
+              <FormField
+                control={form.control}
+                name="reason"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reason for Leave</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Enter your reason for leave (minimum 5 words)"
+                        disabled={isGeneratingLetter}
+                        rows={4}
+                        className="bg-transparent border border-slate-600 placeholder-slate-500 text-slate-300 focus:border-slate-400 focus:ring-0 resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {letter && (
-            <motion.div
-              variants={fieldVariants}
-              className="space-y-4"
-            >
-              <motion.div className="bg-[#121212] border border-slate-700 rounded-md p-4 text-slate-300">
-                <p><strong>From:</strong> {letter.from.name} ({letter.from.usn}) - {letter.from.email}</p>
-                <p><strong>To:</strong> {letter.to.name} - {letter.to.email} ({letter.to.info})</p>
-                <p><strong>Date:</strong> {letter.date}</p>
-                <h4 className="font-semibold text-lg mt-2">{letter.subject}</h4>
-                <p className="whitespace-pre-wrap mt-1">{letter.body}</p>
-              </motion.div>
+              <Button
+                type="submit"
+                disabled={isGeneratingLetter || !form.formState.isValid}
+                className="w-full mt-2"
+              >
+                {isGeneratingLetter ? "Generating Letter..." : "Generate Leave Letter"}
+              </Button>
+            </form>
+          </Form>
+        </section>
 
-              <div className="flex gap-4">
-                <motion.button
+        {/* Right - Generated letter */}
+        <section className="lg:w-1/2 bg-[#121212] border border-slate-700 rounded-md p-6 shadow-lg overflow-auto max-h-[calc(100vh-12rem)] flex flex-col justify-between">
+          {letter ? (
+            <>
+              <Card className="bg-[#1b1b1b] border border-slate-700 p-4 mb-6 flex-grow overflow-auto">
+                <CardHeader>
+                  <h3 className="text-lg font-semibold text-slate-300">Generated Leave Letter</h3>
+                </CardHeader>
+                <CardContent className="text-slate-300 whitespace-pre-wrap">
+                  <p>
+                    <strong>From:</strong> {letter.from.name} ({letter.from.usn}) - {letter.from.email}
+                  </p>
+                  <p>
+                    <strong>To:</strong> {letter.to.name} - {letter.to.email} ({letter.to.info})
+                  </p>
+                  <p>
+                    <strong>Date:</strong> {letter.date}
+                  </p>
+                  <h4 className="font-semibold mt-4">{letter.subject}</h4>
+                  <p className="mt-1">{letter.body}</p>
+                </CardContent>
+              </Card>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
                   onClick={form.handleSubmit(generateLetter)}
-                  className="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-2 rounded shadow-sm"
                   disabled={isGeneratingLetter}
-                  whileHover={{ scale: 1.05, boxShadow: "0 0 12px rgba(192,192,192,0.8)" }}
-                  whileTap={{ scale: 0.95 }}
+                  className="flex-1"
                 >
                   {!isGeneratingLetter ? "Regenerate" : "Regenerating..."}
-                </motion.button>
-
-                <motion.button
+                </Button>
+                <Button
                   onClick={() => letter._id && confirmAndSend(letter._id.toString())}
-                  className="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-2 rounded shadow-sm"
                   disabled={isSendingEmail}
-                  whileHover={{ scale: 1.05, boxShadow: "0 0 12px rgba(192,192,192,0.8)" }}
-                  whileTap={{ scale: 0.95 }}
+                  className="flex-1"
                 >
                   {isSendingEmail ? "Sending..." : "Confirm & Send"}
-                </motion.button>
+                </Button>
               </div>
-            </motion.div>
+            </>
+          ) : (
+            <p className="text-center text-gray-500 select-none">No letter generated yet.</p>
           )}
-        </form>
-      </Form>
-    </motion.div>
+        </section>
+      </div>
+    </div>
   );
 };
 

@@ -1,145 +1,259 @@
-"use client";
-import React, { useState , useEffect} from 'react'
-import axios,{AxiosError} from "axios";
-import { toast } from 'sonner';
-import { ApiRes} from '@/app/types/ApiRes';
-import type { LetterHistory } from '@/app/types/ApiRes';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import HistoryCard from '@/components/HistoryCard';
+// "use client";
+// import React, { useState , useEffect} from 'react'
+// import axios,{AxiosError} from "axios";
+// import { toast } from 'sonner';
+// import { ApiRes} from '@/app/types/ApiRes';
+// import type { LetterHistory } from '@/app/types/ApiRes';
+// import { useRouter } from 'next/navigation';
+// import { useSession } from 'next-auth/react';
+// import HistoryCard from '@/components/HistoryCard';
 
-const LetterHistory = () => {
-  const {data : session , status} = useSession();
-  const router = useRouter();
-  const [letterHistory , setLetterHistory] = useState<LetterHistory[]>([]);
-  const [isSubmittingLetterHistory , setIsSubmittingLetterHistory] = useState<boolean>(false);
-  const [letterError , setLetterError] = useState<string>("");
-  const [isDeletingLetter , setIsDeletingLetter] = useState<boolean>(false);
-  const [letterDelError , setLetterDelError] = useState<string>("");
+// const LetterHistory = () => {
+//   const {data : session , status} = useSession();
+//   const router = useRouter();
+//   const [letterHistory , setLetterHistory] = useState<LetterHistory[]>([]);
+//   const [isSubmittingLetterHistory , setIsSubmittingLetterHistory] = useState<boolean>(false);
+//   const [letterError , setLetterError] = useState<string>("");
+//   const [isDeletingLetter , setIsDeletingLetter] = useState<boolean>(false);
+//   const [letterDelError , setLetterDelError] = useState<string>("");
 
-  useEffect(() => {
-    if(status === "loading") return;
-    if(!session || !session.user){
+//   useEffect(() => {
+//     if(status === "loading") return;
+//     if(!session || !session.user){
+//       router.replace("/sign-in");
+//       return;
+//     }
+//   }, [status , session , router])
+
+
+//   useEffect(() => {
+//     const fetchLetterHistory = async()=>{
+//       try {
+//         setIsSubmittingLetterHistory(true);
+//         setLetterError("");
+//         const response = await axios.get<ApiRes>("/api/historyletter");
+//         if(response.data.success && response.data.lettersHist?.length){
+//           if(response.data.lettersHist.length > 0){
+//             setLetterHistory(response.data.lettersHist?.reverse() || [])
+//           }else{
+//             setLetterError(response.data.message || "You Have zero Leave Letter history");
+//           }
+//         } else {
+//           setLetterError(response.data.message || "Error while accessing the letter history");
+//         }
+//       } catch (error) {
+//         console.error("Error while fetching the letter history" , error);
+//         const axiosError = error as AxiosError<ApiRes>;
+//         setLetterError(axiosError.response?.data.message || "Failed to get the Letter History");
+//       } finally{
+//         setIsSubmittingLetterHistory(false);
+//       }
+//     }
+
+//     fetchLetterHistory();
+//   }, [])
+
+//   const deleteLetterHistory = async(id : string)=>{
+//         try {
+//           setIsDeletingLetter(true);
+//           setLetterDelError("");
+//           if(!id){
+//             throw new Error("Failed to get the letter id");
+//           }
+//           const response = await axios.delete<ApiRes>(`/api/deleteletter/${id}`);
+//           if(response.data.message){
+//             toast("Letter history has been deleted" , {
+//               action : {
+//                 label : "Yeah",
+//                 onClick : ()=> console.log("ok"),
+//               }
+//             })
+//           }else {
+//             toast("Error while deleting the letter" , {
+//               action : {
+//                 label : "Yeah",
+//                 onClick : ()=> console.log("ok"),
+//               }
+//             })
+//             setLetterDelError(response.data.message);
+//           }
+//         } catch (error) {
+//           console.log("Error while deleting the letter history");
+//           const axiosError = error as AxiosError<ApiRes>;
+//           toast(axiosError.response?.data.message , {
+//             action : {
+//               label : "Yeah",
+//               onClick : ()=> console.log("ok"),
+//             }
+//           })
+
+//           setLetterDelError(axiosError.response?.data.message || "Error deleting the letter history");
+//         }finally{
+//           setIsDeletingLetter(false);
+//         }
+//   }
+
+
+//    if (status === "loading") {
+//         return (
+//             <div className="min-h-screen bg-black flex items-center justify-center">
+//                 <p className="text-white text-xl font-semibold tracking-wide animate-pulse">
+//                     Loading...
+//                 </p>
+//             </div>
+//         );
+//     }
+
+//     if (!session?.user) {
+//         return (
+//             <div className="min-h-screen bg-black flex items-center justify-center px-6">
+//                 <div className="text-center max-w-md">
+//                     <h2 className="text-3xl font-bold text-white mb-4">
+//                         Authentication Required
+//                     </h2>
+//                     <p className="text-gray-400 text-lg tracking-wide">
+//                         Please login to continue
+//                     </p>
+//                 </div>
+//             </div>
+//         );
+//     }
+
+//   return (
+//     <div>
+//       <h4>Leave Letter History</h4>
+
+//         <div>
+//           {letterError}
+//           {!isSubmittingLetterHistory && 
+//           letterHistory.map((letter)=>(
+
+//             <HistoryCard 
+//             key={letter._idLetter}
+//             subject={letter.subjectLetter}
+//             pdfUrl={letter.pdfProxyUrl}
+//             onDelete={()=> deleteLetterHistory(letter._idLetter)} 
+//             />
+//           ))}
+
+//         </div>
+
+//     </div>
+//   )
+// }
+
+// export default LetterHistory
+
+
+useEffect(() => {
+    if (status === "loading") return;
+    if (!session?.user) {
       router.replace("/sign-in");
       return;
     }
-  }, [status , session , router])
+  }, [session, router, status]);
 
+  const generateLetter = async (data: z.infer<typeof LetterFeSchema>) => {
+    setIsGeneratingLetter(true);
 
-  useEffect(() => {
-    const fetchLetterHistory = async()=>{
-      try {
-        setIsSubmittingLetterHistory(true);
-        setLetterError("");
-        const response = await axios.get<ApiRes>("/api/historyletter");
-        if(response.data.success && response.data.lettersHist?.length){
-          if(response.data.lettersHist.length > 0){
-            setLetterHistory(response.data.lettersHist?.reverse() || [])
-          }else{
-            setLetterError(response.data.message || "You Have zero Leave Letter history");
-          }
-        } else {
-          setLetterError(response.data.message || "Error while accessing the letter history");
-        }
-      } catch (error) {
-        console.error("Error while fetching the letter history" , error);
-        const axiosError = error as AxiosError<ApiRes>;
-        setLetterError(axiosError.response?.data.message || "Failed to get the Letter History");
-      } finally{
-        setIsSubmittingLetterHistory(false);
+    try {
+      const response = await axios.post<ApiRes>("/api/betterletter", data);
+
+      if (response.data.success) {
+        toast("Letter generated successfully!", {
+          action: {
+            label: "Yeah",
+            onClick: () => console.log("ok"),
+          },
+        });
+        setLetter(response.data.letter || null);
+      } else {
+        toast.error("Letter generation failed", {
+          description: response.data.message,
+          action: {
+            label: "Yeah",
+            onClick: () => console.log("ok"),
+          },
+        });
+        setLetter(null);
       }
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiRes>;
+      const errorMessage =
+        axiosError.response?.data.message || "Failed to generate letter";
+      toast(errorMessage || "error generating the letter", {
+        description: "try again for regenerating the letter",
+        action: {
+          label: "Yeah",
+          onClick: () => console.log("ok"),
+        },
+      });
+      setLetter(null);
+    } finally {
+      setIsGeneratingLetter(false);
     }
+  };
 
-    fetchLetterHistory();
-  }, [])
-
-  const deleteLetterHistory = async(id : string)=>{
-        try {
-          setIsDeletingLetter(true);
-          setLetterDelError("");
-          if(!id){
-            throw new Error("Failed to get the letter id");
-          }
-          const response = await axios.delete<ApiRes>(`/api/deleteletter/${id}`);
-          if(response.data.message){
-            toast("Letter history has been deleted" , {
-              action : {
-                label : "Yeah",
-                onClick : ()=> console.log("ok"),
-              }
-            })
-          }else {
-            toast("Error while deleting the letter" , {
-              action : {
-                label : "Yeah",
-                onClick : ()=> console.log("ok"),
-              }
-            })
-            setLetterDelError(response.data.message);
-          }
-        } catch (error) {
-          console.log("Error while deleting the letter history");
-          const axiosError = error as AxiosError<ApiRes>;
-          toast(axiosError.response?.data.message , {
-            action : {
-              label : "Yeah",
-              onClick : ()=> console.log("ok"),
-            }
-          })
-
-          setLetterDelError(axiosError.response?.data.message || "Error deleting the letter history");
-        }finally{
-          setIsDeletingLetter(false);
+  const confirmAndSend = async (id: string) => {
+    setIsSendingEmail(true);
+    try {
+      if (!id) {
+        throw new Error("Id is required to send the leave letter");
+      }
+      const response = await axios.post<ApiRes>(`/api/sendletter/${id}`);
+      if (response.data.success) {
+        toast("Letter sent", {
+          description: `Your Leave Letter has been sent to ${letter?.to.name}'s email`,
+          action: {
+            label: "Yeah",
+            onClick: () => console.log("ok"),
+          },
+        });
+        form.reset();
+        setLetter(null);
+        router.replace("/leave/letter");
+      } else {
+        toast("Failed to send the letter to your mentor's email", {
+          action: {
+            label: "Yeah",
+            onClick: () => console.log("ok"),
+          },
+        });
+      }
+    } catch (error) {
+      console.log("Error while sending the letter to your mentor", error);
+      const axiosError = error as AxiosError<ApiRes>;
+      toast(
+        axiosError.response?.data.message || "Error while sending the letter to mentor",
+        {
+          action: {
+            label: "Yeah",
+            onClick: () => console.log("ok"),
+          },
         }
+      );
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+        <p className="text-white text-xl font-semibold tracking-wide animate-pulse">
+          Loading...
+        </p>
+      </div>
+    );
   }
 
-
-   if (status === "loading") {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
-                <p className="text-white text-xl font-semibold tracking-wide animate-pulse">
-                    Loading...
-                </p>
-            </div>
-        );
-    }
-
-    if (!session?.user) {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center px-6">
-                <div className="text-center max-w-md">
-                    <h2 className="text-3xl font-bold text-white mb-4">
-                        Authentication Required
-                    </h2>
-                    <p className="text-gray-400 text-lg tracking-wide">
-                        Please login to continue
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
-  return (
-    <div>
-      <h4>Leave Letter History</h4>
-
-        <div>
-          {letterError}
-          {!isSubmittingLetterHistory && 
-          letterHistory.map((letter)=>(
-
-            <HistoryCard 
-            key={letter._idLetter}
-            subject={letter.subjectLetter}
-            pdfUrl={letter.pdfProxyUrl}
-            onDelete={()=> deleteLetterHistory(letter._idLetter)} 
-            />
-          ))}
-
+  if (!session?.user) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-6">
+        <div className="text-center max-w-md">
+          <h2 className="text-3xl font-bold text-white mb-4">Authentication Required</h2>
+          <p className="text-gray-400 text-lg tracking-wide">Please login to continue</p>
         </div>
-
-    </div>
-  )
-}
-
-export default LetterHistory
+      </div>
+    );
+  }
