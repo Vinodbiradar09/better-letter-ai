@@ -123,7 +123,7 @@ export default function DynamicLetterLanding() {
       <FloatingNote top="40%" left="12%" delay={2}>
         “My grandma’s sick” <br /> Not anymore ✨
       </FloatingNote>
-      <FloatingNote top="65%" left="7%" delay={1.5}>
+      <FloatingNote top="85%" left="7%" delay={1.5}>
         Real excuses,<br /> freshly generated!
       </FloatingNote>
       <FloatingNote top="60%" left="78%" delay={3}>

@@ -101,7 +101,7 @@ BELIEVABILITY CHECKLIST FOR EVERY STORY:
 
 MANDATORY AUTHENTIC ELEMENTS (Include 2-3 in every story):
 • Specific person names (mother, Dr. Kumar, auto driver Ravi)
-• Exact locations (hostel room 204, Shivaji Nagar bus stop, family temple)
+• Exact locations (high live inn pg, Shivaji Nagar bus stop, family temple)
 • Real items (new specs, grandfather's medicine, wedding invitation)  
 • Time specifics (3:30 AM, after lunch break, before morning prayer)
 • Indian cultural contexts (muhurat, family priest, traditional ceremony)

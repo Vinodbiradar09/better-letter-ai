@@ -183,10 +183,10 @@ const EmailVerification = ()=> {
         />
       ))}
 
-      <FloatingNote top="15%" left="5%" delay={0}>
+      <FloatingNote top="10%" left="5%" delay={0}>
         Slept late, bro? <br /> Wake up for CS!
       </FloatingNote>
-      <FloatingNote top="40%" left="12%" delay={2}>
+      <FloatingNote top="20%" left="12%" delay={2}>
        Skipped lecture, <br />but somehow mastered sleeping.
       </FloatingNote>
       <FloatingNote top="60%" left="6%" delay={3}>
