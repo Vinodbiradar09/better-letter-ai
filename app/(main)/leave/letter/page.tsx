@@ -31,7 +31,7 @@ import { LetterT } from "@/app/types/ApiRes";
 import Navbar from "@/components/Navbar";
 import { CardHeader, CardContent } from "@/components/ui/card";
 import { motion, Variants } from "framer-motion";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Pencil, Check, X } from "lucide-react";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 100, scale: 0.9 },
@@ -99,6 +99,7 @@ const LeaveLetter = () => {
   const [isGeneratingLetter, setIsGeneratingLetter] = useState<boolean>(false);
   const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
   const { data: session, status } = useSession();
+  const [selectedMentorId, setSelectedMentorId] = useState<string>("");
 
   const form = useForm<z.infer<typeof LetterFeSchema>>({
     resolver: zodResolver(LetterFeSchema),
@@ -118,6 +119,11 @@ const LeaveLetter = () => {
   const watchFromDate = form.watch("fromDate");
   const watchToDate = form.watch("toDate");
 
+  const [isEditingSubject, setIsEditingSubject] = useState(false);
+  const [isEditingBody, setIsEditingBody] = useState(false);
+  const [editedSubject, setEditedSubject] = useState("");
+  const [editedBody, setEditedBody] = useState("");
+
   useEffect(() => {
     if (watchFromDate && watchToDate) {
       const from = new Date(watchFromDate);
@@ -131,11 +137,16 @@ const LeaveLetter = () => {
 
   const handleMentorChange = useCallback(
     (mentorId: string) => {
+      setSelectedMentorId(mentorId);
       const selectedMentor = mentors.find((m) => m._id === mentorId);
       if (selectedMentor) {
         form.setValue("to.name", selectedMentor.name);
         form.setValue("to.email", selectedMentor.email);
         form.setValue("to.info", selectedMentor.info);
+      } else {
+        form.setValue("to.name", "");
+        form.setValue("to.email", "");
+        form.setValue("to.info", "");
       }
     },
     [form]
@@ -196,7 +207,10 @@ const LeaveLetter = () => {
       if (!id) {
         throw new Error("Id is required to send the leave letter");
       }
-      const response = await axios.post<ApiRes>(`/api/sendletter/${id}`);
+      const response = await axios.post<ApiRes>(`/api/sendletter/${id}`, {
+        subject: letter?.subject,
+        body: letter?.body,
+      });
       if (response.data.success) {
         toast("Letter sent", {
           description: `Your Leave Letter has been sent to ${letter?.to.name}'s email`,
@@ -205,9 +219,22 @@ const LeaveLetter = () => {
             onClick: () => console.log("ok"),
           },
         });
+        
+        // Clear editing states first
+        setIsEditingSubject(false);
+        setIsEditingBody(false);
+        setEditedSubject("");
+        setEditedBody("");
+        
+        // Reset form and clear letter
         form.reset();
         setLetter(null);
-        router.replace("/leave/letter");
+        setSelectedMentorId("");
+        
+        // Use setTimeout to ensure state updates are processed before navigation
+        setTimeout(() => {
+          router.replace("/leave/letter");
+        }, 100);
       } else {
         toast("Failed to send the letter to your mentor's email", {
           action: {
@@ -231,6 +258,42 @@ const LeaveLetter = () => {
     } finally {
       setIsSendingEmail(false);
     }
+  };
+
+  const startEditSubject = () => {
+    if (letter) {
+      setEditedSubject(letter.subject);
+      setIsEditingSubject(true);
+    }
+  };
+
+  const saveSubject = () => {
+    if (letter) {
+      setLetter({ ...letter, subject: editedSubject });
+      setIsEditingSubject(false);
+    }
+  };
+
+  const cancelEditSubject = () => {
+    setIsEditingSubject(false);
+  };
+
+  const startEditBody = () => {
+    if (letter) {
+      setEditedBody(letter.body);
+      setIsEditingBody(true);
+    }
+  };
+
+  const saveBody = () => {
+    if (letter) {
+      setLetter({ ...letter, body: editedBody });
+      setIsEditingBody(false);
+    }
+  };
+
+  const cancelEditBody = () => {
+    setIsEditingBody(false);
   };
 
   if (status === "loading") {
@@ -315,6 +378,7 @@ const LeaveLetter = () => {
                       <FormLabel className="text-gray-200 font-semibold text-lg">Select Mentor</FormLabel>
                       <FormControl>
                         <Select
+                          value={selectedMentorId}
                           onValueChange={handleMentorChange}
                           disabled={isGeneratingLetter}
                           aria-label="Select a mentor"
@@ -470,8 +534,57 @@ const LeaveLetter = () => {
                   <p>
                     <strong className="text-gray-100 font-semibold">Date:</strong> {letter.date}
                   </p>
-                  <h4 className="font-bold text-white mt-4 text-lg">{letter.subject}</h4>
-                  <p className="mt-2 leading-relaxed text-gray-300">{letter.body}</p>
+                  <div className="flex items-start gap-2">
+                    {isEditingSubject ? (
+                      <Input
+                        value={editedSubject}
+                        onChange={(e) => setEditedSubject(e.target.value)}
+                        className="bg-[#101010]/90 border border-[#3a3a3a] text-white focus:border-[#606060] focus:ring-0 rounded-xl shadow-inner transition-all duration-300 font-bold text-lg"
+                      />
+                    ) : (
+                      <h4 className="font-bold text-white mt-4 text-lg">{letter.subject}</h4>
+                    )}
+                    {!isEditingSubject ? (
+                      <button onClick={startEditSubject} className="ml-2 mt-4">
+                        <Pencil className="w-5 h-5 text-gray-400 hover:text-white" />
+                      </button>
+                    ) : (
+                      <div className="flex mt-4 ml-2">
+                        <button onClick={saveSubject} className="mr-2">
+                          <Check className="w-5 h-5 text-green-500 hover:text-green-300" />
+                        </button>
+                        <button onClick={cancelEditSubject}>
+                          <X className="w-5 h-5 text-red-500 hover:text-red-300" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-start gap-2">
+                    {isEditingBody ? (
+                      <Textarea
+                        value={editedBody}
+                        onChange={(e) => setEditedBody(e.target.value)}
+                        rows={10}
+                        className="bg-[#101010]/90 border border-[#3a3a3a] text-gray-200 focus:border-[#606060] focus:ring-0 resize-none rounded-xl shadow-inner transition-all duration-300 leading-relaxed"
+                      />
+                    ) : (
+                      <p className="mt-2 leading-relaxed text-gray-300">{letter.body}</p>
+                    )}
+                    {!isEditingBody ? (
+                      <button onClick={startEditBody} className="ml-2">
+                        <Pencil className="w-5 h-5 text-gray-400 hover:text-white" />
+                      </button>
+                    ) : (
+                      <div className="flex ml-2">
+                        <button onClick={saveBody} className="mr-2">
+                          <Check className="w-5 h-5 text-green-500 hover:text-green-300" />
+                        </button>
+                        <button onClick={cancelEditBody}>
+                          <X className="w-5 h-5 text-red-500 hover:text-red-300" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </motion.div>
 

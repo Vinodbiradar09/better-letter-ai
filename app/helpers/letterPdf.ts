@@ -2,18 +2,31 @@ import { LetterT } from "../types/ApiRes";
 
 export async function generateLeaveLetterPDF(letterData: LetterT): Promise<Buffer> {
     try {
+        // Validate letterData
+        if (!letterData.from?.name || !letterData.from?.usn || !letterData.from?.email) {
+            throw new Error("Invalid sender details");
+        }
+        if (!letterData.to?.name || !letterData.to?.email || !letterData.to?.info) {
+            throw new Error("Invalid recipient details");
+        }
+        if (!letterData.subject || !letterData.body) {
+            throw new Error("Letter subject and body are required");
+        }
+        if (!letterData.date) {
+            throw new Error("Letter date is required");
+        }
+
         const { jsPDF } = await import('jspdf');
-        
         const doc = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
-            format: 'a4'
+            format: 'a4',
         });
 
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         const margin = 20;
-        const contentWidth = pageWidth - (margin * 2);
+        const contentWidth = pageWidth - margin * 2;
 
         let currentY = 25;
 
@@ -39,53 +52,41 @@ export async function generateLeaveLetterPDF(letterData: LetterT): Promise<Buffe
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.text('From:', margin, currentY);
-        
         currentY += 8;
         doc.setFont('helvetica', 'normal');
-        doc.text(`${letterData.from.name}`, margin, currentY);
-        
+        doc.text(letterData.from.name, margin, currentY);
         currentY += 6;
         doc.text(`USN: ${letterData.from.usn}`, margin, currentY);
-        
         currentY += 6;
         doc.text(`Email: ${letterData.from.email}`, margin, currentY);
-
         currentY += 15;
 
         doc.setFont('helvetica', 'bold');
         doc.text('To:', margin, currentY);
-        
         currentY += 8;
         doc.setFont('helvetica', 'normal');
-        doc.text(`${letterData.to.name}`, margin, currentY);
-        
+        doc.text(letterData.to.name, margin, currentY);
         currentY += 6;
         doc.text(`Email: ${letterData.to.email}`, margin, currentY);
-        
         currentY += 6;
-        doc.text(`${letterData.to.info}`, margin, currentY);
-        
+        doc.text(letterData.to.info, margin, currentY);
         currentY += 6;
         doc.text('Acharya Institute of Technology', margin, currentY);
-
         currentY += 15;
 
         doc.setFont('helvetica', 'bold');
         doc.text('Date:', margin, currentY);
         doc.setFont('helvetica', 'normal');
-        doc.text(`${letterData.date}`, margin + 15, currentY);
-
+        doc.text(letterData.date, margin + 15, currentY);
         currentY += 15;
 
         doc.setFont('helvetica', 'bold');
         doc.text('Subject:', margin, currentY);
-        
         currentY += 8;
         doc.setFont('helvetica', 'normal');
         const subjectLines = doc.splitTextToSize(letterData.subject, contentWidth);
         doc.text(subjectLines, margin, currentY);
-        currentY += (subjectLines.length * 6);
-
+        currentY += subjectLines.length * 6;
         currentY += 15;
 
         doc.setFont('helvetica', 'normal');
@@ -94,18 +95,16 @@ export async function generateLeaveLetterPDF(letterData: LetterT): Promise<Buffe
 
         const cleanBody = cleanLetterBody(letterData.body);
         const bodyLines = doc.splitTextToSize(cleanBody, contentWidth);
-        
         for (let i = 0; i < bodyLines.length; i++) {
             if (currentY > pageHeight - 60) {
                 doc.addPage();
                 currentY = margin;
             }
             doc.text(bodyLines[i], margin, currentY);
-            currentY += 5; 
+            currentY += 5;
         }
 
         currentY += 15;
-
         if (currentY > pageHeight - 40) {
             doc.addPage();
             currentY = margin;
@@ -113,25 +112,26 @@ export async function generateLeaveLetterPDF(letterData: LetterT): Promise<Buffe
 
         doc.text('Thank you for your consideration.', margin, currentY);
         currentY += 12;
-
         doc.text('Yours respectfully,', margin, currentY);
         currentY += 20;
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`${letterData.from.name}`, margin, currentY);
+        doc.text(letterData.from.name, margin, currentY);
         currentY += 8;
-
         doc.setFont('helvetica', 'normal');
         doc.text(`USN: ${letterData.from.usn}`, margin, currentY);
 
         const pdfOutput = doc.output('arraybuffer');
         const pdfBuffer = Buffer.from(pdfOutput);
 
-        return pdfBuffer;
+        if (!pdfBuffer || pdfBuffer.length === 0) {
+            throw new Error("Generated PDF is empty");
+        }
 
+        return pdfBuffer;
     } catch (error) {
         console.error('PDF generation error:', error);
-        throw new Error(`PDF generation failed: ${error}`);
+        throw new Error(`PDF generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }
 

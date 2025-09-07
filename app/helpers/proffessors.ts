@@ -7,12 +7,12 @@ export interface Mentor {
 }
 
 export const mentors : Mentor[] = [
-    // {
-    //     _id : "mentor_mit_000",
-    //     name : "Jin Yang Testing",
-    //     email :"vinodjb07@gmail.com",
-    //     info : "Assistant Professor",
-    // },
+    {
+        _id : "mentor_mit_000",
+        name : "Jin Yang Testing",
+        email :"vinodjb07@gmail.com",
+        info : "Assistant Professor",
+    },
     {
         _id : "mentor_mit_001",
         name : "Mithuna H R",
