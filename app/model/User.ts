@@ -43,7 +43,7 @@ const userSchema = new Schema<UserInt>(
             unique : [true , "Usn must be unique"],
             required : [true , "Usn is required"],
             uppercase : true,
-            match : [/^1AY(22|23|24|25|26)[A-Z]{2,3}(0(0[1-9]|[1-9][0-9])|1([0-7][0-9]|80))$/ , "Invalid USN format"],
+            match : [/^1AY(22|23|24|25|26)[A-Z]{2,3}((00[1-9]|0[1-9][0-9]|1[0-7][0-9]|180)|40[0-9]|41[0-9]|420)$/ , "Invalid USN format"],
             index : true,
         },
         password : {

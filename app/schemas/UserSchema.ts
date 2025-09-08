@@ -2,7 +2,8 @@ import { z } from "zod";
 
 export const usnValidation = z.string().
 length(10 , "USN must be 10 characters only").
-regex(/^1AY(22|23|24|25|26)[A-Z]{2,3}(0(0[1-9]|[1-9][0-9])|1([0-7][0-9]|80))$/ , "Invalid usn please enter you university seat number correctly").refine((val)=>{
+regex(/^1AY(22|23|24|25|26)[A-Z]{2,3}((00[1-9]|0[1-9][0-9]|1[0-7][0-9]|180)|40[0-9]|41[0-9]|420)$/
+ , "Invalid usn please enter you university seat number correctly").refine((val)=>{
     const year = parseInt(val.slice(3 , 5));
     const number = parseInt(val.slice(-3));
     const validYears = [22 , 23 , 24 , 25 , 26];
