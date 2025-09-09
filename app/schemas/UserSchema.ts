@@ -11,7 +11,11 @@ export const usnValidation = z.string()
       const year = parseInt(val.slice(3, 5));
       const number = parseInt(val.slice(-3));
       const validYears = [22, 23, 24, 25, 26];
-      return validYears.includes(year) && ((number >= 1 && number <= 180) || (number >= 400 && number <= 420));
+      // Validate year and number ranges to match regex
+      return (
+        validYears.includes(year) &&
+        ((number >= 1 && number <= 180) || (number >= 400 && number <= 420))
+      );
     },
     { message: "USN must belong to batch 2022 to 2026 and have a valid number (001-180 or 400-420)" }
   );
